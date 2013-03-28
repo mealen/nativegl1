@@ -26,9 +26,9 @@
 
 #include <algorithm>
 #include <string>
-#include <vector>
-#include <stdio.h>
 
+#include <stdio.h>
+#include <vector>
 #include <android/sensor.h>
 #include <android/log.h>
 #include <android_native_app_glue.h>
