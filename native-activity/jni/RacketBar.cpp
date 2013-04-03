@@ -20,7 +20,8 @@ class RacketBar {
 
 
 private:
-
+	bool isUserBar;
+	float fYOffset;
 	float* vertexPositionsPointer;
 	int vertexPositionsSize;
 	GLuint theProgram;
@@ -34,7 +35,7 @@ private:
 					"uniform vec2 offset;"
 					"void main()\n"
 					"{\n"
-					"vec4 totalOffset = vec4(offset.x, offset.y, 0.0, 0.0);"
+					"vec4 totalOffset = vec4(offset.x, offset.y, 0.0, 0.0);\n"
 					" gl_Position = vPosition + totalOffset;\n"
 					"}\n";
 
@@ -55,8 +56,12 @@ private:
 				0.5f, 0.05, 0.0f // top
 				};
 
-		vertexPositionsPointer = (float*) malloc(sizeof(incomingVertexes));
 		vertexPositionsSize = sizeof(incomingVertexes);
+
+		vertexPositionsPointer = (float*) malloc(vertexPositionsSize);
+		memcpy(vertexPositionsPointer, incomingVertexes, vertexPositionsSize);
+		vertexPositionsSize = vertexPositionsSize / sizeof(float);
+
 	}
 
 	GLuint CreateShader(GLenum eShaderType, const std::string &strShaderFile) {
@@ -134,14 +139,29 @@ private:
 		glGenBuffers(1, &positionBufferObject);
 
 		glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
-		glBufferData(GL_ARRAY_BUFFER, vertexPositionsSize, &vertexPositionsPointer,
+
+		float arrayForGL[vertexPositionsSize];
+		for(int i=0; i< vertexPositionsSize;i++){
+			float* element = vertexPositionsPointer + i;
+			LOGI("element %d is %f", i, *element);
+			arrayForGL[i] = *element;
+			LOGI("arrayForGL[%d] is %f", i, arrayForGL[i]);
+
+		}
+		glBufferData(GL_ARRAY_BUFFER, sizeof(arrayForGL), arrayForGL,
 				GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 public:
 
 
-	RacketBar() {
+	RacketBar(bool userBar) {
+		if(userBar){
+			fYOffset = -0.5f;
+		} else {
+			 fYOffset = 0.5f;
+		}
+		isUserBar = userBar;
 		initializeVertexShader();
 		initializeFragmentShader();
 		InitializeProgram();
@@ -154,7 +174,7 @@ public:
 	void draw(float position) {
 
 		glUseProgram(theProgram);
-		float fYOffset = -0.5f;
+
 		GLint offsetLocation = glGetUniformLocation(theProgram, "offset");
 
 		glUniform2f(offsetLocation, position, fYOffset);

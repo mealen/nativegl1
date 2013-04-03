@@ -135,6 +135,7 @@ static int engine_init_display(struct engine* engine) {
     glDisable(GL_DEPTH_TEST);
 
     //initOpengl();
+    initOpengl2();
 
     return 0;
 }

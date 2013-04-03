@@ -153,10 +153,19 @@ void openglDraw(float position) {
 	glUseProgram(0);
 }
 
+RacketBar *rbUser;
+RacketBar *rbCPU;
+
+void initOpengl2(){
+		rbUser = new RacketBar(true);
+		rbCPU = new RacketBar(false);
+}
+
 void openglDraw2(float position){
 	glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	RacketBar rb;
-	rb.draw(position);
+	//RacketBar rb;
+	rbUser->draw(position);
+	rbCPU->draw(0);
 }
 
